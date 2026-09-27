@@ -1,0 +1,7 @@
+{
+  // Tests read `.find()` results straight into assertions, where a miss fails the test
+  // anyway, so null checks are off here. Everything else stays strict.
+  "extends": "../tsconfig.json",
+  "compilerOptions": { "strictNullChecks": false },
+  "include": [".", "../src/server", "../src/shared", "../src/client/lib.ts"]
+}
