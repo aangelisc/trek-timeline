@@ -8,3 +8,7 @@ local_docs
 /server/
 /client/
 .trek-dev
+.env
+.env.*
+*.pem
+*.key
