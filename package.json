@@ -1,0 +1,20 @@
+{
+  "name": "trek-timeline",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test \"test/*.test.js\"",
+    "sandbox": "node scripts/sandbox.js",
+    "fixtures": "node scripts/gen-fixtures.js",
+    "dev": "npm run fixtures && npx -y trek-plugin-sdk dev",
+    "status": "npx -y trek-plugin-sdk status",
+    "pack": "npx -y trek-plugin-sdk pack",
+    "test:e2e": "node --test --test-concurrency=1 test/e2e/*.e2e.js",
+    "shot": "node scripts/shot.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0",
+    "trek-plugin-sdk": "^1.7.0"
+  }
+}
