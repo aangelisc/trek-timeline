@@ -1,0 +1,7 @@
+# Build output and generated files
+/server/
+/client/
+dev-fixtures.json
+plugin.zip
+package-lock.json
+local_docs/

@@ -4,3 +4,7 @@ dev-fixtures.json
 *.db
 .DS_Store
 local_docs
+# Build output (npm run build): what TREK loads, generated from src/
+/server/
+/client/
+.trek-dev
