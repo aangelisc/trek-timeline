@@ -34,6 +34,7 @@ MakeRelease() {
     release-please github-release \
       --token=$GITHUB_TOKEN \
       --repo-url=aangelisc/trek-timeline
+    gh pr edit $(gh pr list --state merged --json number,title,mergedAt --limit 1 --jq '[.[] | select(.title | contains("chore") and contains("main") and contains("release"))] | sort_by(.mergedAt) | reverse | .[0].number') --add-label "autorelease: tagged"
     npm run publish
     echo "Make release completed."
 }
