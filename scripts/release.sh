@@ -1,6 +1,7 @@
 #!/bin/bash
 
 GITHUB_TOKEN=$(gh auth token)
+source scripts/env.sh
 
 Help() {
     echo "Usage: $0 [-h]"

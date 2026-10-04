@@ -7,8 +7,50 @@
       "bump-minor-pre-major": false,
       "bump-patch-for-minor-pre-major": false,
       "draft": false,
-      "prerelease": false
+      "prerelease": false,
+      "extra-files": [
+        "trek-plugin.json"
+      ]
     }
   },
+  "changelog-sections": [
+    {
+      "type": "feat",
+      "section": "✨ Features"
+    },
+    {
+      "type": "fix",
+      "section": "🐛 Fixes"
+    },
+    {
+      "type": "perf",
+      "section": "⚡ Performance Improvements"
+    },
+    {
+      "type": "refactor",
+      "section": "🔧 Refactor",
+      "hidden": false
+    },
+    {
+      "type": "docs",
+      "section": "📚 Documentation",
+      "hidden": false
+    },
+    {
+      "type": "test",
+      "section": "🧪 Tests",
+      "hidden": true
+    },
+    {
+      "type": "chore",
+      "section": "🧹 Chores",
+      "hidden": true
+    },
+    {
+      "type": "ci",
+      "section": "🔄 CI",
+      "hidden": true
+    }
+  ],
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
 }

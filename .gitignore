@@ -12,3 +12,5 @@ local_docs
 .env.*
 *.pem
 *.key
+
+scripts/env.sh
