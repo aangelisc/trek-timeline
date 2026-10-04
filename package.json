@@ -16,11 +16,14 @@
     "status": "npm run build && npx -y trek-plugin-sdk status",
     "pack": "npm run build && npx -y trek-plugin-sdk pack",
     "shot": "npm run build && node scripts/shot.ts",
-    "publish": "npm run build && npx trek-plugin-sdk publish --repo aangelisc/trek-timeline"
+    "publish": "npm run build && npx trek-plugin-sdk publish --repo aangelisc/trek-timeline",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@types/node": "^24.19.0",
+    "commitlint": "^21.2.3",
     "esbuild": "^0.28.2",
+    "husky": "^9.1.7",
     "playwright": "^1.63.0",
     "prettier": "3.9.9",
     "trek-plugin-sdk": "^1.7.0",

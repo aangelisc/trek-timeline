@@ -1,0 +1,1 @@
+npx --no -- commitlint --default-config --edit $1
