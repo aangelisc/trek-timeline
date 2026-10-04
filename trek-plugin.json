@@ -1,7 +1,7 @@
 {
   "id": "trek-timeline",
   "name": "Trek Timeline",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "apiVersion": 1,
   "author": "aangelisc",
   "description": "See the whole trip on one timeline: drag stays, transport and plans between days, spot gaps and clashes, and edit stay and transport dates in a spreadsheet grid.",
