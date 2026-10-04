@@ -7,7 +7,7 @@ and clashes, and edit stay and transport details in a spreadsheet grid.
 
 ## What it does
 
-Trek Timeline adds a **Timeline** tab to every trip. The top half is a timeline of the trip with one
+Trek Timeline adds a **Trek Timeline** tab to every trip. The top half is a timeline of the trip with one
 column per day:
 
 - **Stays** are bars that run from check-in to check-out. Drag a bar to move the stay, or drag
