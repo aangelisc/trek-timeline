@@ -15,7 +15,8 @@
     "dev": "npm run build && npm run fixtures && npx -y trek-plugin-sdk dev",
     "status": "npm run build && npx -y trek-plugin-sdk status",
     "pack": "npm run build && npx -y trek-plugin-sdk pack",
-    "shot": "npm run build && node scripts/shot.ts"
+    "shot": "npm run build && node scripts/shot.ts",
+    "publish": "npm run build && npx trek-plugin-sdk publish --repo aangelisc/trek-timeline"
   },
   "devDependencies": {
     "@types/node": "^24.19.0",
