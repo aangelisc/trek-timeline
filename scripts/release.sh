@@ -31,6 +31,9 @@ UpdateRelease() {
 
 MakeRelease() {
     echo "Running make release..."
+    release-please github-release \
+      --token=$GITHUB_TOKEN \
+      --repo-url=aangelisc/trek-timeline
     npm run publish
     echo "Make release completed."
 }
