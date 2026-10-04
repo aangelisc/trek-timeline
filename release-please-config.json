@@ -1,4 +1,5 @@
 {
+  "include-component-in-tag": false,
   "packages": {
     ".": {
       "package-name": "trek-timeline",
@@ -10,7 +11,8 @@
       "prerelease": false,
       "extra-files": [
         "trek-plugin.json"
-      ]
+      ],
+      "include-component-in-tag": false
     }
   },
   "changelog-sections": [
