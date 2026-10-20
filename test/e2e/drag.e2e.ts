@@ -1,9 +1,12 @@
 // Moving things on the timeline, by mouse and by keyboard.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { useSandbox, state, dayCol, card, open, center, drag, settled } from './helpers.ts';
+import { useSandbox, state, dayCol, card, open as baseOpen, center, drag, settled } from './helpers.ts';
 
 useSandbox(4399);
+
+// These tests drag by raw coordinates, so model a fixed-height fill frame (see setFrameHeight).
+const open: typeof baseOpen = (o = {}) => baseOpen({ fillHeight: 1000, ...o });
 
 test('drag a place to another day', async () => {
   const { page, f, errors } = await open();

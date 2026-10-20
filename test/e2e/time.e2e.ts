@@ -1,9 +1,12 @@
 // Timed drags land on the zoom's time grid; keyboard nudges move by 15 minutes.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { useSandbox, state, open, center, drag, settled } from './helpers.ts';
+import { useSandbox, state, open as baseOpen, center, drag, settled } from './helpers.ts';
 
 useSandbox(4400);
+
+// These tests drag by raw coordinates, so model a fixed-height fill frame (see setFrameHeight).
+const open: typeof baseOpen = (o = {}) => baseOpen({ fillHeight: 1000, ...o });
 
 test('drag a train later by two hours; the tooltip shows where it lands', async () => {
   const { page, f, dialogs } = await open();

@@ -67,7 +67,7 @@ export const collaboratorEdit = () => fetch(BASE + '/__sandbox/collab', { method
 export const state = (): Promise<RawTrek> => fetch(BASE + '/__sandbox/state').then((r) => r.json());
 
 /** A fresh page on fresh data. `dialog` answers trek.confirm (default: accept). */
-export async function open({ upstream = true, readOnly = false, dialog = true } = {}) {
+export async function open({ upstream = true, readOnly = false, dialog = true, fillHeight = 0 } = {}) {
   await sandbox({ upstream, readOnly, reset: true });
   const page = await browser.newPage({
     viewport: { width: 2000, height: 1100 },
@@ -80,11 +80,27 @@ export async function open({ upstream = true, readOnly = false, dialog = true } 
     return dialog ? d.accept() : d.dismiss();
   });
   await page.goto(BASE + '/');
+  // Pointer-drag tests pass a fillHeight to model a fixed-height fill frame (see setFrameHeight),
+  // trimmed so the preview shell gains no outer scrollbar. Click/type tests don't need it.
+  if (fillHeight) {
+    await setFrameHeight(page, fillHeight);
+    const outerOverflow = await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
+    if (outerOverflow > 0) await setFrameHeight(page, fillHeight - outerOverflow);
+  }
   const f = page.frameLocator('#f');
   await f.locator('.ts-timeline').waitFor();
   // Narrow days so the whole trip fits: drags need both ends on screen.
   await f.locator('.ts-toolbar button[title="Narrow days"]').click();
   return { page, f, errors, dialogs };
+}
+
+/**
+ * Pin the plugin frame to a fixed height, modelling the host's fill-mode tab. The SDK preview
+ * otherwise auto-sizes the frame, which collapses a fill-scoped 100%-height plugin. The
+ * !important rule outranks the preview's inline height.
+ */
+export async function setFrameHeight(page: Page, px: number): Promise<void> {
+  await page.addStyleTag({ content: `#f{height:${px}px!important;min-height:${px}px!important}` });
 }
 
 export type Point = { x: number; y: number };
