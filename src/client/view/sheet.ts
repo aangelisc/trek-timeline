@@ -289,15 +289,6 @@ function costsPanel(): HTMLElement {
         })
       : null,
     h('div', { class: 'ts-costfoot' }, [
-      h('button', {
-        class: 'trek-btn trek-btn--secondary',
-        text: 'Edit in Costs',
-        on: {
-          click() {
-            trek.navigate('/trips/' + S.tripId + '?tab=finanzplan');
-          },
-        },
-      }),
       h('span', {
         class: 'trek-muted',
         text: 'Costs are read-only here. For a category spreadsheet, try the Budget Table plugin.',
