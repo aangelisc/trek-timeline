@@ -1,9 +1,27 @@
 // The page as a whole: loading, live updates, and the gated, read-only and mobile modes.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { useSandbox, collaboratorEdit, state, dayCol, card, open, center, drag } from './helpers.ts';
+import { useSandbox, collaboratorEdit, state, dayCol, card, open, center, drag, setFrameHeight } from './helpers.ts';
 
 useSandbox(4402);
+
+test('in a short fill frame the page scrolls instead of clipping its sheet', async () => {
+  const { page, f } = await open();
+  // Shrink the fill frame below the content, like a small screen.
+  await setFrameHeight(page, 400);
+  await page.waitForTimeout(50);
+  const m = await f.locator('#app').evaluate((app) => {
+    app.scrollTop = app.scrollHeight;
+    const sheet = document.querySelector('.ts-sheet').getBoundingClientRect();
+    return {
+      scrollable: app.scrollHeight - app.clientHeight,
+      sheetReachable: sheet.bottom <= window.innerHeight + 2,
+    };
+  });
+  assert.ok(m.scrollable > 0, 'the app scrolls when content exceeds the frame');
+  assert.ok(m.sheetReachable, 'scrolling brings the sheet fully into view');
+  await page.close();
+});
 
 test('loads the fixture trip with its warnings', async () => {
   const { page, f, errors } = await open();
@@ -32,7 +50,7 @@ test('a collaborator edit shows up without a reload', async () => {
 });
 
 test('without the upstream API, gated gestures are off and explained', async () => {
-  const { page, f } = await open({ upstream: false });
+  const { page, f } = await open({ upstream: false, fillHeight: 1000 });
   await f.getByText('Some moves need a newer TREK.').waitFor();
   assert.equal(await f.locator('.ts-dayhead[data-drag]').count(), 0);
   assert.equal(await f.locator('.ts-daycol .ts-card--place[data-drag]').count(), 0);
@@ -48,7 +66,7 @@ test('without the upstream API, gated gestures are off and explained', async () 
 });
 
 test('a read-only member gets reverted and told once', async () => {
-  const { page, f } = await open({ readOnly: true });
+  const { page, f } = await open({ readOnly: true, fillHeight: 1000 });
   const bar = await center(f.locator('.ts-bar--stay', { hasText: 'L7' }));
   const dayW = (await center(f.locator('.ts-dayhead').first())).box.width;
   await drag(page, bar, { x: bar.x - dayW, y: bar.y });
