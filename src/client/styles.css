@@ -22,6 +22,12 @@
   box-sizing: border-box;
 }
 
+/* In fill mode the kit scrolls .trek-scroll (#app) inside a fixed-height frame, which needs the
+   document element to have a height. Scoped to [data-fill] so auto-height surfaces aren't collapsed. */
+:root[data-fill] {
+  height: 100%;
+}
+
 body {
   margin: 0;
   color: var(--ts-text);
