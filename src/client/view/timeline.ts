@@ -178,6 +178,26 @@ function transportExtent(t: Transport): number {
   return (t.end - t.start) * W >= NARROW_PX ? t.end : t.end + (LABEL_PX + 8) / W;
 }
 
+// Display labels for the transport types.
+const TRANSPORT_TYPE_LABEL: Record<string, string> = {
+  flight: 'Flight',
+  train: 'Train',
+  bus: 'Bus',
+  car: 'Car',
+  rental_car: 'Rental car',
+  ferry: 'Ferry',
+  cruise: 'Cruise',
+  transfer: 'Transfer',
+  taxi: 'Taxi',
+  transport: 'Transport',
+};
+
+function transportTypeLabel(type: string | null): string {
+  if (!type) return '';
+  const key = type.toLowerCase();
+  return TRANSPORT_TYPE_LABEL[key] || key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ');
+}
+
 function transportBar(t: Transport, rowIdx: number, wIdx: WarningIndex): HTMLElement[] {
   const W = dw();
   const canDrag = !S.readOnly;
@@ -185,7 +205,11 @@ function transportBar(t: Transport, rowIdx: number, wIdx: WarningIndex): HTMLEle
   const times = (t.dep.time || '') + (t.arr.time ? '–' + t.arr.time : '');
   const dur = t.durationMin ? L.fmtDuration(t.durationMin) : '';
   const narrow = (t.end - t.start) * W < NARROW_PX;
-  const text = [h('span', { text: route }), h('small', { text: [times, dur].filter(Boolean).join(' · ') })];
+  // Lead with the type and booking name; route and times go on the line below.
+  const typeLabel = transportTypeLabel(t.type);
+  const name = typeLabel ? typeLabel + ' · ' + t.title : t.title;
+  const sub = [route, [times, dur].filter(Boolean).join(' · ')].filter(Boolean).join(' · ');
+  const text = [h('span', { text: name }), h('small', { text: sub })];
   const bar = h(
     'div',
     {
@@ -202,7 +226,7 @@ function transportBar(t: Transport, rowIdx: number, wIdx: WarningIndex): HTMLEle
         top: rowIdx * ROW + 3 + 'px',
       },
       title:
-        t.title +
+        name +
         '\n' +
         route +
         (times ? ' · ' + times : '') +
@@ -213,7 +237,7 @@ function transportBar(t: Transport, rowIdx: number, wIdx: WarningIndex): HTMLEle
         (canDrag
           ? '\nDrag to change the day and time (hold Shift for whole days). Keyboard: M, then arrows for days or , and . for 15 minutes.'
           : ''),
-      'aria-label': (t.type || 'Transport') + ': ' + t.title + ', ' + route + (times ? ', ' + times : ''),
+      'aria-label': (typeLabel || 'Transport') + ': ' + t.title + ', ' + route + (times ? ', ' + times : ''),
     },
     narrow ? null : text,
   );
