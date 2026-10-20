@@ -17,9 +17,9 @@ test('loads the fixture trip with its warnings', async () => {
     .waitFor();
   assert.equal(await f.locator('.ts-bar--stay').count(), 4);
   assert.equal(await f.locator('.ts-bar--transport').count(), 4);
-  // A short bar carries its route in a label beside it.
-  assert.match(await f.locator('.ts-bar--transport').first().getAttribute('aria-label'), /LHR → HND, 11:30–08:00/);
-  assert.match(await f.locator('.ts-barlabel').first().textContent(), /LHR → HND/);
+  // A short bar leads with its type and name, with the route in a label beside it.
+  assert.match(await f.locator('.ts-bar--transport').first().getAttribute('aria-label'), /Flight: .*LHR → HND, 11:30–08:00/);
+  assert.match(await f.locator('.ts-barlabel').first().textContent(), /Flight · .*LHR → HND/);
   assert.deepEqual(errors, []);
   await page.close();
 });
