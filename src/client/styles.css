@@ -290,7 +290,6 @@ body {
 }
 
 @keyframes ts-flash {
-
   0%,
   40% {
     background: color-mix(in srgb, var(--ts-accent) 16%, transparent);
@@ -321,7 +320,7 @@ body {
   min-width: 8px;
 }
 
-.ts-bar>span:not(.ts-handle):not(.ts-stop) {
+.ts-bar > span:not(.ts-handle):not(.ts-stop) {
   flex: 0 1 auto;
   min-width: 24px;
   overflow: hidden;
@@ -856,7 +855,6 @@ td .trek-select-wrap {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   .ts-dayhead.is-flash,
   .ts-daycol.is-flash,
   .ts-table tr.is-flash td {

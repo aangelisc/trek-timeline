@@ -1,0 +1,29 @@
+name: release-please
+
+# Maintains the release PR (version bump + changelog) on every push to main, using the
+# repo's release-please-config.json / .release-please-manifest.json. Cutting the GitHub
+# release and publishing to the TREK registry stay manual via scripts/release.sh.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        with:
+          # GITHUB_TOKEN is enough to open/update the release PR. PRs it opens do NOT trigger
+          # the CI workflow above; swap in a PAT (e.g. secrets.RELEASE_PLEASE_TOKEN) if you
+          # want CI to run on the release PR.
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json

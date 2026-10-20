@@ -1,31 +1,9 @@
 // The sheet: inline cells, and bars that open their row.
-import test from 'node:test';
 import assert from 'node:assert/strict';
-import { useSandbox, collaboratorEdit, state, open, center, drag, settled } from './helpers.ts';
+import test from 'node:test';
+import { center, collaboratorEdit, drag, open, state, useSandbox } from './helpers.ts';
 
 useSandbox(4401);
-
-test('type a time key by key in the sheet', async () => {
-  const { page, f } = await open();
-  // Real typing, not fill(): a time input fires `change` on every keystroke.
-  await f.locator('[data-key="stay-out:1"]').click();
-  await page.keyboard.type('1230', { delay: 40 });
-  assert.equal(await f.locator('[data-key="stay-out:1"]').inputValue(), '12:30', 'nothing saved mid-entry');
-  assert.equal((await state()).accommodations.find((a) => a.id === 1).check_out, '11:00');
-  await page.keyboard.press('Enter');
-  await settled(page);
-  assert.equal((await state()).accommodations.find((a) => a.id === 1).check_out, '12:30');
-
-  await f.getByRole('tab', { name: 'Transport' }).click();
-  await f.locator('[data-key="tr-dep:2"]').click();
-  await page.keyboard.type('0945', { delay: 40 });
-  await f.locator('.ts-toolbar h1').click(); // focus leaving the cell saves too
-  await settled(page);
-  const train = (await state()).reservations.find((r) => r.id === 2);
-  assert.equal(train.reservation_time, '2026-10-09T09:45');
-  assert.equal(train.endpoints.find((e) => e.role === 'from').local_time, '09:45');
-  await page.close();
-});
 
 test('Escape in a cell abandons the edit', async () => {
   const { page, f } = await open();

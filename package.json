@@ -6,8 +6,8 @@
   "scripts": {
     "build": "node scripts/build.ts",
     "typecheck": "tsc -p tsconfig.json && tsc -p src/client/tsconfig.json && tsc -p test/tsconfig.json && tsc -p test/e2e/tsconfig.json",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "format": "prettier --write \"src/**/*.{ts,css,html,json}\" \"test/**/*.{ts,json}\" \"scripts/**/*.{ts,mjs}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,css,html,json}\" \"test/**/*.{ts,json}\" \"scripts/**/*.{ts,mjs}\"",
     "test": "node --test \"test/**/*.test.ts\"",
     "test:e2e": "npm run build && node --test --test-concurrency=1 test/e2e/*.e2e.ts",
     "sandbox": "node scripts/sandbox.ts",
