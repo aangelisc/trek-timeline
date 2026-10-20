@@ -32,6 +32,14 @@
       "scope": "user",
       "input_type": "checkbox",
       "default": true
+    },
+    {
+      "key": "warn_in_planner",
+      "label": "Also show these warnings in the trip header",
+      "hint": "When off, warnings appear only on the Timeline tab, not across the Plan view.",
+      "scope": "user",
+      "input_type": "checkbox",
+      "default": true
     }
   ],
   "requiredAddons": [],
