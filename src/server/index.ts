@@ -9,7 +9,7 @@ import type {
   TimelinePayload,
   TimelineResponse,
 } from '../shared/types.ts';
-import { loadTrip, warningOptions } from './load.ts';
+import { loadTrip, showWarningsInPlanner, warningOptions } from './load.ts';
 import { applyPlan, capabilities, OpError, planOp } from './operations/index.ts';
 import type { TimelineCtx } from './trek.ts';
 import { computeWarnings, toTripWarnings } from './warnings.ts';
@@ -118,6 +118,8 @@ export default definePlugin({
   hooks: {
     warningProvider: {
       async getWarnings(tripId, ctx) {
+        // Lets the user keep warnings off the trip header; the timeline tab still shows them.
+        if (!(await showWarningsInPlanner(ctx))) return [];
         const { model } = await loadTrip(ctx, tripId);
         return toTripWarnings(computeWarnings(model, await warningOptions(ctx)));
       },

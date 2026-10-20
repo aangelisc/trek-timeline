@@ -166,6 +166,14 @@ test('warningProvider feeds TREK the capped list', async () => {
   assert.ok(ws.every((w) => typeof w.message === 'string'));
 });
 
+test('warn_in_planner off silences the header hook but not the tab', async () => {
+  const { drv } = host({ userSettings: { warn_in_planner: false } });
+  const ws = await drv.hook<TripWarning[]>('warningProvider', 'getWarnings', TRIP_ID);
+  assert.deepEqual(ws, []);
+  // The timeline tab's own warnings are independent of the setting.
+  assert.ok((body(await get(drv, { tripId: TRIP_ID })).warnings || []).length > 0);
+});
+
 test('warningProvider is never called without its grant', async () => {
   const { drv } = host({
     grants: ALL.filter((g) => g !== 'hook:trip-warning-provider'),

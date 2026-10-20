@@ -45,18 +45,25 @@ export async function loadTrip(ctx: TimelineCtx, tripId: number): Promise<Snapsh
   return { raw, model: buildModel(raw) };
 }
 
+/** A user checkbox setting; defaults to true when unset or unreadable. */
+async function readFlag(ctx: TimelineCtx, key: string): Promise<boolean> {
+  try {
+    const v = await ctx.settings.get(key);
+    return v === undefined || v === null ? true : v === true || v === 'true';
+  } catch {
+    return true;
+  }
+}
+
 /** The acting user's warning preferences; defaults when unset or userless. */
 export async function warningOptions(ctx: TimelineCtx): Promise<Required<WarningOptions>> {
-  const read = async (key: string) => {
-    try {
-      const v = await ctx.settings.get(key);
-      return v === undefined || v === null ? true : v === true || v === 'true';
-    } catch {
-      return true;
-    }
-  };
   return {
-    missingStays: await read('warn_missing_stays'),
-    emptyDays: await read('warn_empty_days'),
+    missingStays: await readFlag(ctx, 'warn_missing_stays'),
+    emptyDays: await readFlag(ctx, 'warn_empty_days'),
   };
+}
+
+/** Whether to feed warnings to TREK's trip header (default true); the timeline tab shows them either way. */
+export async function showWarningsInPlanner(ctx: TimelineCtx): Promise<boolean> {
+  return readFlag(ctx, 'warn_in_planner');
 }
