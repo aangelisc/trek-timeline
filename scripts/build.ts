@@ -2,8 +2,7 @@
 // Builds the plugin TREK loads from src/:
 //   server/index.js   one CommonJS file. TREK's child process require()s it and injects
 //                     'trek-plugin-sdk' itself, so the SDK stays external.
-//   client/           index.html, styles.css and app.js (one classic script: the frame
-//                     sits at an opaque origin, where ES modules don't load).
+//   client/index.html  page with its CSS and classic script inlined for the opaque frame.
 //
 //   node scripts/build.ts            build once
 //   node scripts/build.ts --watch    rebuild on change (the sandbox uses watch())
@@ -25,8 +24,22 @@ function writeServerPackage(): void {
   fs.writeFileSync(at('server', 'package.json'), '{ "type": "commonjs" }\n');
 }
 
-function copyStatic(): void {
-  for (const f of STATIC) fs.copyFileSync(at('src', 'client', f), at('client', f));
+function writeClientPage(): void {
+  const html = fs.readFileSync(at('src', 'client', 'index.html'), 'utf8');
+  const css = fs.readFileSync(at('src', 'client', 'styles.css'), 'utf8');
+  const js = fs.readFileSync(at('client', 'app.js'), 'utf8');
+  const styleTag = '<link rel="stylesheet" href="./styles.css" />';
+  const scriptTag = '<script src="./app.js"></script>';
+  if (!html.includes(styleTag) || !html.includes(scriptTag)) {
+    throw new Error('Client asset tags not found in index.html');
+  }
+  if (/<\/style/i.test(css) || /<\/script/i.test(js)) {
+    throw new Error('Client assets contain an HTML closing tag');
+  }
+  fs.writeFileSync(
+    at('client', 'index.html'),
+    html.replace(styleTag, () => `<style>\n${css}\n</style>`).replace(scriptTag, () => `<script>\n${js}\n</script>`),
+  );
 }
 
 const server: esbuild.BuildOptions = {
@@ -63,18 +76,32 @@ export async function build(): Promise<void> {
   clean();
   await Promise.all([esbuild.build(server), esbuild.build(client)]);
   writeServerPackage();
-  copyStatic();
+  writeClientPage();
 }
 
 /** Build, then keep rebuilding on change. Resolves once the first build is done. */
 export async function watch(): Promise<() => Promise<void>> {
   clean();
   writeServerPackage();
-  copyStatic();
   const copyOnChange = fs.watch(at('src', 'client'), (_e, f) => {
-    if (f && STATIC.includes(f)) copyStatic();
+    if (f && STATIC.includes(f) && fs.existsSync(at('client', 'app.js'))) writeClientPage();
   });
-  const ctxs = await Promise.all([esbuild.context(server), esbuild.context(client)]);
+  const ctxs = await Promise.all([
+    esbuild.context(server),
+    esbuild.context({
+      ...client,
+      plugins: [
+        {
+          name: 'inline-page',
+          setup: (b) => {
+            b.onEnd((result) => {
+              if (!result.errors.length) writeClientPage();
+            });
+          },
+        },
+      ],
+    }),
+  ]);
   await Promise.all(ctxs.map((c) => c.rebuild()));
   await Promise.all(ctxs.map((c) => c.watch()));
   return async () => {
