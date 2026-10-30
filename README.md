@@ -100,7 +100,7 @@ In **Settings → Plugins → Trek Timeline**, each user can choose whether to b
 
 The plugin is written in TypeScript under `src/` (Node 22.18 or later runs the `.ts` files
 directly). `npm run build` bundles it with esbuild into what TREK loads: `server/index.js` (one
-CommonJS file) and `client/` (the page as one classic script). Both are build output and are not
+CommonJS file) and `client/index.html` (the page with its CSS and classic script inlined for TREK’s sandboxed frame). Both are build output and are not
 committed. `pack`, `status`, `dev`, `shot` and `test:e2e` build first.
 
 ```bash
