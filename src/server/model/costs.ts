@@ -4,13 +4,15 @@ import type { RawCost, RawReservation } from '../trek.ts';
 import type { Lookup } from './lookup.ts';
 
 /**
- * Cost of a budget item in the trip currency. TREK freezes `exchange_rate` at entry;
- * it is taken as item currency -> trip currency, and an item without one is summed as-is.
+ * Cost of a budget item in the trip currency. TREK freezes `exchange_rate` at entry,
+ * stored relative to the trip currency: units of the item currency per one unit of the
+ * trip currency (¥112,190 at 180.66 on a EUR trip is €621). An item without one is
+ * summed as-is.
  */
 export function costInTripCurrency(item: RawCost, currency: string | null): number {
   const v = Number(item.total_price) || 0;
   if (!item.currency || !currency || item.currency === currency) return v;
-  return item.exchange_rate ? v * item.exchange_rate : v;
+  return item.exchange_rate ? v / item.exchange_rate : v;
 }
 
 /** Totals in the trip currency, overall, per category and per booking. */

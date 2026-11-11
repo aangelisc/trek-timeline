@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildModel } from '../src/server/model/index.ts';
+import { buildModel, costInTripCurrency } from '../src/server/model/index.ts';
 import { tripFixture } from './fixtures/trip.ts';
 import type { PlaceItem } from '../src/shared/types.ts';
 
@@ -101,7 +101,7 @@ test('unscheduled tray holds unplanned places and undated bookings', () => {
 test('costs total in trip currency, by category and by day', () => {
   const m = model();
   assert.equal(m.costs.currency, 'EUR');
-  assert.equal(m.costs.total, 4276); // includes 5000 JPY at 0.0062 = 31
+  assert.equal(m.costs.total, 4276); // includes 5000 JPY at 161.29 JPY/EUR = 31
   assert.equal(m.costs.byCategory[0].category, 'Accommodation');
   assert.equal(m.costs.byCategory[0].total, 1975);
   assert.equal(m.costs.unallocated, 60); // travel insurance: no date, booking or place
@@ -109,6 +109,14 @@ test('costs total in trip currency, by category and by day', () => {
   assert.equal(m.days[1].cost, 620 + 20 + 31); // stay by check-in day, place, dated JPY item
   const perDay = m.days.reduce((s, d) => s + d.cost, 0);
   assert.equal(Math.round((perDay + m.costs.unallocated) * 100) / 100, m.costs.total);
+});
+
+test('a foreign expense is divided by its frozen rate (item units per trip unit)', () => {
+  // TREK stores ¥112,190 on a EUR trip with exchange_rate 180.66 and counts it as €621.
+  const item = { id: 1, total_price: 112190, currency: 'JPY', exchange_rate: 180.66 };
+  close(costInTripCurrency(item, 'EUR'), 621);
+  assert.equal(costInTripCurrency({ ...item, exchange_rate: null }, 'EUR'), 112190);
+  assert.equal(costInTripCurrency({ ...item, currency: 'EUR' }, 'EUR'), 112190);
 });
 
 test('missing costs (addon off or no grant) still builds a model', () => {

@@ -131,7 +131,7 @@ export type RawCost = {
   category?: string | null;
   total_price?: number | null;
   currency?: string | null;
-  /** Taken as item currency → trip currency, frozen at entry. */
+  /** Frozen at entry: units of the item currency per one unit of the trip currency. */
   exchange_rate?: number | null;
   reservation_id?: number | null;
   place_id?: number | null;
