@@ -372,7 +372,7 @@ function costs(): RawCost[] {
     c(11, 'Food', 'Izakaya dinner', 45, { expense_date: '2026-10-07' }),
     c(12, 'Transport', 'Suica top-up', 5000, {
       currency: 'JPY',
-      exchange_rate: 0.0062,
+      exchange_rate: 161.29, // JPY per EUR, as TREK stores it
       expense_date: '2026-10-05',
     }),
     c(13, 'Other', 'Travel insurance', 60),
